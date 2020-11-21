@@ -11,19 +11,12 @@ const FRAGMENT = 'Fragment';
  * create Identifier
  * @param path NodePath
  * @param state
- * @param id string
+ * @param name string
  * @returns MemberExpression
  */
 const createIdentifier = (
-  state: State, id: string,
-): t.Identifier => {
-  if (!state.get(JSX_HELPER_KEY)) {
-    state.set(JSX_HELPER_KEY, new Set());
-  }
-  const helpers = state.get(JSX_HELPER_KEY);
-  helpers.add(id);
-  return t.identifier(id);
-};
+  state: State, name: string,
+): t.Identifier | t.MemberExpression => state.get(name)();
 
 /**
  * Checks if string is describing a directive
@@ -45,7 +38,7 @@ const isFragment = (
     return path.node.name === FRAGMENT;
   }
   if (path.isJSXMemberExpression()) {
-    return (path.node as t.JSXMemberExpression).property.name === FRAGMENT;
+    return path.node.property.name === FRAGMENT;
   }
   return false;
 };
